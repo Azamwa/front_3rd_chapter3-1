@@ -11,7 +11,7 @@ import {
   isDateInRange,
 } from '../../utils/dateUtils';
 
-describe('test', () => {
+describe('getDaysInMonth', () => {
   it('1월은 31일 수를 반환한다', () => {
     const daysInMonth = getDaysInMonth(2024, 1);
     expect(daysInMonth).toBe(31);
@@ -32,7 +32,16 @@ describe('test', () => {
     expect(daysInMonth).toBe(28);
   });
 
-  it('유효하지 않은 월에 대해 적절히 처리한다', () => {});
+  it('유효하지 않은 월에 대해 적절히 처리한다(이전 해나 다음해의 일수를 반환한다)', () => {
+    const daysInMonthArray = [
+      getDaysInMonth(2023, 0),
+      getDaysInMonth(2023, -1),
+      getDaysInMonth(2023, 13),
+      getDaysInMonth(2023, 15),
+    ];
+
+    expect(daysInMonthArray).toEqual([31, 30, 31, 31]);
+  });
 });
 
 describe('getWeekDates', () => {
