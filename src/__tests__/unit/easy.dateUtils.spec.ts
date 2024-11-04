@@ -140,7 +140,6 @@ describe('getWeekDates', () => {
 describe('getWeeksAtMonth', () => {
   it('2024년 7월 1일의 올바른 주 정보를 반환해야 한다', () => {
     const weeksAtMonth = getWeeksAtMonth(new Date('2024-07-01'));
-    console.log(weeksAtMonth);
     expect(weeksAtMonth).toEqual([
       [null, 1, 2, 3, 4, 5, 6],
       [7, 8, 9, 10, 11, 12, 13],
