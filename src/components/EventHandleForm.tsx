@@ -11,12 +11,20 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { useRef, useState } from 'react';
+import { overlay } from 'overlay-kit';
+import { useState } from 'react';
 
 import { useEventForm } from '../hooks/useEventForm';
-import { EventForm, RepeatType } from '../types';
+import { Event, EventForm, RepeatType } from '../types';
+import { OverlappingEventDialog } from './OverlappingEventDialog';
 import { findOverlappingEvents } from '../utils/eventOverlap';
 import { getTimeErrorMessage } from '../utils/timeValidation';
+
+interface EventHandleFormProps {
+  events: Event[];
+  // eslint-disable-next-line no-unused-vars
+  saveEvent: (eventData: Event | EventForm) => Promise<void>;
+}
 
 const categories = ['업무', '개인', '가족', '기타'];
 
@@ -28,7 +36,7 @@ const notificationOptions = [
   { value: 1440, label: '1일 전' },
 ];
 
-export const EventHandleForm = () => {
+export const EventHandleForm = ({ events, saveEvent }: EventHandleFormProps) => {
   const toast = useToast();
   const {
     title,
@@ -64,8 +72,6 @@ export const EventHandleForm = () => {
   } = useEventForm();
 
   const [overlappingEvents, setOverlappingEvents] = useState<Event[]>([]);
-  const [isOverlapDialogOpen, setIsOverlapDialogOpen] = useState(false);
-  const cancelRef = useRef<HTMLButtonElement>(null);
 
   const addOrUpdateEvent = async () => {
     if (!title || !date || !startTime || !endTime) {
@@ -105,14 +111,23 @@ export const EventHandleForm = () => {
       notificationTime,
     };
 
-    // const overlapping = findOverlappingEvents(eventData, events);
-    // if (overlapping.length > 0) {
-    //   setOverlappingEvents(overlapping);
-    //   setIsOverlapDialogOpen(true);
-    // } else {
-    //   await saveEvent(eventData);
-    //   resetForm();
-    // }
+    const overlapping = findOverlappingEvents(eventData, events);
+    if (overlapping.length > 0) {
+      setOverlappingEvents(overlapping);
+      overlay.open(({ isOpen, close }) => {
+        return (
+          <OverlappingEventDialog
+            isOpen={isOpen}
+            close={close}
+            overlappingEvents={overlappingEvents}
+            saveEvent={saveEvent}
+          />
+        );
+      });
+    } else {
+      await saveEvent(eventData);
+      resetForm();
+    }
   };
   return (
     <VStack w="400px" spacing={5} align="stretch">
