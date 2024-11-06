@@ -119,17 +119,11 @@ describe('useNotification', () => {
       },
     ]);
 
-    act(() => vi.advanceTimersByTime(1000));
+    act(() => {
+      result.current.removeNotification(0);
+      vi.advanceTimersByTime(1000);
+    });
 
-    expect(result.current.notifications).not.toEqual([
-      {
-        id: 'a7f8d5e0-3f4b-4b8a-9e20-1f46a8c5e123',
-        message: '45분 후 Cooking Workshop 일정이 시작됩니다.',
-      },
-      {
-        id: 'a7f8d5e0-3f4b-4b8a-9e20-1f46a8c5e123',
-        message: '45분 후 Cooking Workshop 일정이 시작됩니다.',
-      },
-    ]);
+    expect(result.current.notifications).toHaveLength(0);
   });
 });
