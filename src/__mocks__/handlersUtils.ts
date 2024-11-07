@@ -35,7 +35,7 @@ export const setupHandler = () => {
     const httpPostMethod = http.post('/api/events', async ({ request }) => {
       const newEvent: Event = (await request.json()) as Event;
 
-      newEvent.id = crypto.randomUUID();
+      newEvent.id = String(eventsState.length + 1);
 
       if (!newEvent) {
         return HttpResponse.json(null, { status: 404 });
