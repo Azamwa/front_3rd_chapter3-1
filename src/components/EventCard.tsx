@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { BellIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { Box, HStack, IconButton, Text, VStack } from '@chakra-ui/react';
 
@@ -10,9 +11,17 @@ interface EventCardProps {
     value: number;
     label: string;
   }[];
+  editEvent: (event: Event) => void;
+  deleteEvent: (id: string) => Promise<void>;
 }
 
-export const EventCard = ({ event, notifiedEvents, notificationOptions }: EventCardProps) => {
+export const EventCard = ({
+  event,
+  notifiedEvents,
+  notificationOptions,
+  editEvent,
+  deleteEvent,
+}: EventCardProps) => {
   return (
     <Box borderWidth={1} borderRadius="lg" p={3} width="100%">
       <HStack justifyContent="space-between">
@@ -50,7 +59,7 @@ export const EventCard = ({ event, notifiedEvents, notificationOptions }: EventC
           </Text>
         </VStack>
         <HStack>
-          {/* <IconButton
+          <IconButton
             aria-label="Edit event"
             icon={<EditIcon />}
             onClick={() => editEvent(event)}
@@ -59,7 +68,7 @@ export const EventCard = ({ event, notifiedEvents, notificationOptions }: EventC
             aria-label="Delete event"
             icon={<DeleteIcon />}
             onClick={() => deleteEvent(event.id)}
-          /> */}
+          />
         </HStack>
       </HStack>
     </Box>

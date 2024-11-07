@@ -1,21 +1,4 @@
-import { BellIcon, ChevronLeftIcon, ChevronRightIcon, DeleteIcon } from '@chakra-ui/icons';
-import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  Box,
-  CloseButton,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  HStack,
-  IconButton,
-  Input,
-  Select,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Flex, FormControl, FormLabel, Heading, Input, Text, VStack } from '@chakra-ui/react';
 
 import { EventCard } from './components/EventCard.tsx';
 import { EventHandleForm } from './components/EventHandleForm.tsx';
@@ -24,6 +7,8 @@ import { MonthView } from './components/MonthView.tsx';
 import { NotificationAlert } from './components/NotificationAlert.tsx';
 import { WeekView } from './components/WeekView.tsx';
 import { useCalendarView } from './hooks/useCalendarView.ts';
+import { useEditingEvent } from './hooks/useEditingEvent.ts';
+import { useEventForm } from './hooks/useEventForm.ts';
 import { useEventOperations } from './hooks/useEventOperations.ts';
 import { useNotifications } from './hooks/useNotifications.ts';
 import { useSearch } from './hooks/useSearch.ts';
@@ -37,10 +22,14 @@ const notificationOptions = [
 ];
 
 function App() {
-  const { events, saveEvent, deleteEvent } = useEventOperations(Boolean(false));
-  // const { events, saveEvent, deleteEvent } = useEventOperations(Boolean(editingEvent), () =>
-  //   setEditingEvent(null)
-  // );
+  const eventFormState = useEventForm();
+  const { editingEvent, editEvent, setEditingEvent } = useEditingEvent({
+    setEventForm: eventFormState.setEventForm,
+    setIsRepeating: eventFormState.setIsRepeating,
+  });
+  const { events, saveEvent, deleteEvent } = useEventOperations(Boolean(editingEvent), () =>
+    setEditingEvent(null)
+  );
 
   const { notifications, notifiedEvents, setNotifications } = useNotifications(events);
   const { view, setView, currentDate, holidays, navigate } = useCalendarView();
@@ -49,7 +38,12 @@ function App() {
   return (
     <Box w="full" h="100vh" m="auto" p={5}>
       <Flex gap={6} h="full">
-        <EventHandleForm events={events} saveEvent={saveEvent} />
+        <EventHandleForm
+          events={events}
+          saveEvent={saveEvent}
+          editingEvent={editingEvent}
+          eventFormState={eventFormState}
+        />
 
         <VStack flex={1} spacing={5} align="stretch">
           <Heading>일정 보기</Heading>
@@ -91,6 +85,8 @@ function App() {
                 event={event}
                 notifiedEvents={notifiedEvents}
                 notificationOptions={notificationOptions}
+                editEvent={editEvent}
+                deleteEvent={deleteEvent}
                 key={event.id}
               />
             ))

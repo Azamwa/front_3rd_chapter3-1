@@ -18,6 +18,9 @@ interface OverlappingEventDialogProps {
   overlappingEvents: Event[];
   // eslint-disable-next-line no-unused-vars
   saveEvent: (eventData: Event | EventForm) => Promise<void>;
+  eventForm: EventForm;
+  editingEvent: Event | null;
+  isRepeating: boolean;
 }
 
 export const OverlappingEventDialog = ({
@@ -25,6 +28,9 @@ export const OverlappingEventDialog = ({
   close,
   overlappingEvents,
   saveEvent,
+  eventForm,
+  editingEvent,
+  isRepeating,
 }: OverlappingEventDialogProps) => {
   const cancelRef = useRef<HTMLButtonElement>(null);
 
@@ -54,22 +60,15 @@ export const OverlappingEventDialog = ({
               colorScheme="red"
               onClick={() => {
                 close();
-                // saveEvent({
-                //   id: editingEvent ? editingEvent.id : undefined,
-                //   title,
-                //   date,
-                //   startTime,
-                //   endTime,
-                //   description,
-                //   location,
-                //   category,
-                //   repeat: {
-                //     type: isRepeating ? repeatType : 'none',
-                //     interval: repeatInterval,
-                //     endDate: repeatEndDate || undefined,
-                //   },
-                //   notificationTime,
-                // });
+                saveEvent({
+                  id: editingEvent ? editingEvent.id : undefined,
+                  ...eventForm,
+                  repeat: {
+                    type: isRepeating ? eventForm.repeat.type : 'none',
+                    interval: eventForm.repeat.interval,
+                    endDate: eventForm.repeat.endDate || undefined,
+                  },
+                });
               }}
               ml={3}
             >
