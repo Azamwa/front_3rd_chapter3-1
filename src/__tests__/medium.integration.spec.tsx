@@ -1,13 +1,16 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { render, screen, within, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
+import { OverlayProvider } from 'overlay-kit';
 
 import App from '../App';
 
 const renderApp = () => {
   return render(
     <ChakraProvider>
-      <App />
+      <OverlayProvider>
+        <App />
+      </OverlayProvider>
     </ChakraProvider>
   );
 };
