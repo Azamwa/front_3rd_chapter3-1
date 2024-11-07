@@ -35,6 +35,8 @@ export const setupHandler = () => {
     const httpPostMethod = http.post('/api/events', async ({ request }) => {
       const newEvent: Event = (await request.json()) as Event;
 
+      newEvent.id = crypto.randomUUID();
+
       if (!newEvent) {
         return HttpResponse.json(null, { status: 404 });
       }
@@ -51,7 +53,7 @@ export const setupHandler = () => {
     const httpPutMethod = http.put('/api/events/:id', async ({ params, request }) => {
       const { id } = params;
 
-      const updateEvent = events.find((event) => event.id === id);
+      const updateEvent = eventsState.find((event) => event.id === id);
       if (!updateEvent) {
         return HttpResponse.json(null, { status: 404 });
       }
