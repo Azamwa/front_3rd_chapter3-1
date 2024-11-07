@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Dispatch, SetStateAction, useState } from 'react';
 
 import { Event, EventForm } from '../types';
